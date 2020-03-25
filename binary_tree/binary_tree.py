@@ -15,6 +15,14 @@ the tree being created
    3
 """
 
+
+def in_order(root):
+    if root is not None:
+        in_order(root.left)
+        print(root.value,)
+        in_order(root.right)
+
+
 class Node:
     def __init__(self, value):
         self.left = None
@@ -82,17 +90,49 @@ class BinaryTree:
                 return
             BinaryTree.insert_bst(node.left, key)
 
-    def remove(self):
-        pass
+    @staticmethod
+    def remove(root, key):
+        if not root:
+            return root
+        # if root.value == key:
+        #     return root
+        if root.value < key:
+            root.right = BinaryTree.remove(root.right, key)
+        elif root.value > key:
+            root.left = BinaryTree.remove(root.left, key)
+        else:
+            if root.left is None:
+                temp = root.right
+                root = None
+                return temp
+            elif root.right is None:
+                temp = root.left
+                root = None
+                return temp
+            temp = BinaryTree.min_value_node(root.right)
+            root.key = temp.key
+            root.right = BinaryTree.remove(root.right, temp.key)
+        return root
 
-    def print(self):
+    @staticmethod
+    def min_value_node(node):
+        current = node
+        # loop down to find the leftmost leaf
+        while current.left:
+            current = current.left
+        return current
+
+    def print(self, root=None):
         """
             breadth first traversal with printing
             expected output is :
             8 6 10 4 7 9 12 3
         :return:
         """
-        self.bfs(self.root)
+        if root:
+            self.bfs(root)
+        else:
+            self.bfs(self.root)
 
     def print_dfs(self):
         """
@@ -139,14 +179,21 @@ class BinaryTree:
 
 
 bin_tree = BinaryTree()
-# print("--------------")
+print("------Before any edits--------")
+in_order(bin_tree.root)
 # bin_tree.print()
-# print("--------------")
+print("------After some Edits--------")
+bin_tree.root = bin_tree.remove(bin_tree.root, 4)
+in_order(bin_tree.root)
 # bin_tree.print_dfs()
 # print("--------------")
 # bin_tree.insert(16)
 # bin_tree.print()
 
-bin_tree.insert_bst(bin_tree.root, 12)
-bin_tree.insert_bst(bin_tree.root, 2)
-bin_tree.print_dfs()
+# bin_tree.insert_bst(bin_tree.root, 12)
+# bin_tree.insert_bst(bin_tree.root, 2)
+# bin_tree.print_dfs()
+
+# in_order(root)
+
+# bin_tree.print()
